@@ -227,11 +227,16 @@
 
         header {
             text-align: center;
-            padding: 160px 20px 80px; 
+            padding: 0 20px; /* 기존 고정 패딩 제거하고 높이로 조절 */
             max-width: 900px; 
             width: 100%;
             position: relative; /* z-index 맥락 형성 */
             z-index: 1;
+            min-height: 100vh; /* 화면 전체 높이를 차지하도록 설정하여 아래 요소들을 밀어냄 */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
 
         header h1 {
@@ -355,7 +360,7 @@
                 flex-shrink: 0;
             }
 
-            header { padding: 120px 20px 60px; }
+            header { padding: 0 20px; }
             header h1 { font-size: 3.5rem; }
 
             .features { width: 95%; grid-template-columns: 1fr; gap: 20px; }
@@ -587,6 +592,7 @@
 
         let rotationX = 0;
         let rotationY = 0;
+        let autoRotate = 0; // 독립적인 자동 회전 변수 추가
 
         function animateGlobe() {
             ctx.clearRect(0, 0, width, height);
@@ -594,8 +600,13 @@
             // 마우스 움직임에 따른 부드러운 회전 보간 (easing)
             targetX = mouseX * 0.0008;
             targetY = mouseY * 0.0008;
-            rotationY += (targetX - rotationY) * 0.05 + 0.002; // +0.002는 마우스가 가만히 있어도 도는 기본 자전 속도
+            
+            // 마우스 인터랙션 회전
+            rotationY += (targetX - rotationY) * 0.05;
             rotationX += (targetY - rotationX) * 0.05;
+
+            // 항상 일정하게 증가하는 자동 회전값
+            autoRotate += 0.002;
 
             // 스크롤 시 위로 올라가며 점차 투명해지는 효과
             const scrollOffset = currentScrollY * 0.6; 
@@ -606,9 +617,9 @@
                 ctx.translate(width / 2, height / 2 - scrollOffset);
 
                 points.forEach(p => {
-                    // Y축 기준 회전
-                    let cosY = Math.cos(rotationY);
-                    let sinY = Math.sin(rotationY);
+                    // Y축 기준 회전 (마우스 회전 + 자동 회전 결합)
+                    let cosY = Math.cos(rotationY + autoRotate);
+                    let sinY = Math.sin(rotationY + autoRotate);
                     let x1 = p.baseX * cosY - p.baseZ * sinY;
                     let z1 = p.baseZ * cosY + p.baseX * sinY;
 
@@ -643,7 +654,3 @@
     </script>
 </body>
 </html>
-
-
-
-
