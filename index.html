@@ -562,6 +562,24 @@
         </div>
     </div>
 
+    <div class="modal-overlay" id="noticeModal">
+        <div class="glass-box modal-content">
+            <span class="close-btn" id="closeNoticeBtn">&times;</span>
+            <h3>공지</h3>
+            <div class="contact-info" style="text-align: left; line-height: 1.6; margin-bottom: 25px;">
+                <p>동아리 면접 관련 안내</p>
+                <p>1학기 동아리 부원 모집 및 면접 관련하여 안내 드립니다. 동아리 면접은 1:1 대면 면접이 아닌 객관식 시험으로 진행 될 예정으로, 물리학과 공학 관련 시험이 실시될 예정입니다. 동아리 관련 추가적인 문의는 연락처를 통해 자유롭게 남겨주시기 바랍니다. 감사합니다.</p>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.95rem;">
+                <label style="cursor: pointer; display: flex; align-items: center; gap: 8px; opacity: 0.9;">
+                    <input type="checkbox" id="hideFor7Days" style="cursor: pointer; width: 16px; height: 16px; accent-color: var(--highlight-yellow);">
+                    7일간 보지 않기
+                </label>
+                <button class="lens-btn pill mini-btn" id="confirmNoticeBtn">확인</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // 1. 네비게이션 바 스크롤 이펙트
         window.addEventListener('scroll', function() {
@@ -628,7 +646,7 @@
         }, { threshold: 0.1 });
         document.querySelectorAll('.fade-in-up').forEach(el => observer.observe(el));
 
-        // 5. 팝업 및 클립보드 복사
+        // 5. 연락처 팝업 및 클립보드 복사
         const contactModal = document.getElementById('contactModal');
         const openContactBtn = document.getElementById('open-contact-btn');
         const closeModalBtn = document.getElementById('closeModalBtn');
@@ -647,7 +665,43 @@
             });
         });
 
-        // 6. 지구본 3D 배경
+        // 6. 공지사항 팝업 로직 (추가됨)
+        const noticeModal = document.getElementById('noticeModal');
+        const closeNoticeBtn = document.getElementById('closeNoticeBtn');
+        const confirmNoticeBtn = document.getElementById('confirmNoticeBtn');
+        const hideFor7DaysCheckbox = document.getElementById('hideFor7Days');
+
+        function checkAndShowNotice() {
+            const hideUntil = localStorage.getItem('hideNoticeUntil');
+            const now = new Date().getTime();
+            // 로컬 스토리지에 시간이 없거나 지정된 시간이 지났을 경우에만 팝업 표시
+            if (!hideUntil || now > parseInt(hideUntil)) {
+                // 부드러운 애니메이션을 위해 0.3초 뒤에 띄움
+                setTimeout(() => {
+                    noticeModal.classList.add('active');
+                }, 300);
+            }
+        }
+
+        function closeNotice() {
+            if (hideFor7DaysCheckbox && hideFor7DaysCheckbox.checked) {
+                // 체크박스 선택 시 7일(밀리초) 뒤의 시간을 저장
+                const hideTime = new Date().getTime() + (7 * 24 * 60 * 60 * 1000); 
+                localStorage.setItem('hideNoticeUntil', hideTime);
+            }
+            noticeModal.classList.remove('active');
+        }
+
+        closeNoticeBtn.addEventListener('click', closeNotice);
+        confirmNoticeBtn.addEventListener('click', closeNotice);
+        noticeModal.addEventListener('click', (e) => {
+            if (e.target === noticeModal) closeNotice();
+        });
+
+        // 스크립트 실행 시 바로 공지사항 체크
+        checkAndShowNotice();
+
+        // 7. 지구본 3D 배경
         const canvas = document.getElementById('globeCanvas');
         const ctx = canvas.getContext('2d');
         let width, height, globeRadius;
