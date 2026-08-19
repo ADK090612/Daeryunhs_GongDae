@@ -31,7 +31,7 @@
         }
 
         body {
-            background: linear-gradient(180deg, #f46bfe 0%, #a2b0ff 45%, #20bacb 100%);
+            background-color: #000000;
             min-height: 100vh;
             color: var(--text-color);
             display: flex;
@@ -54,20 +54,57 @@
             pointer-events: none;
         }
 
-        .bg-circle {
-            position: absolute;
-            border-radius: 50%;
-            background: linear-gradient(to right, rgba(255,255,255,0.3), rgba(255,255,255,0.05));
-            filter: blur(80px);
-            z-index: -2;
-            animation: float 10s infinite ease-in-out alternate;
+        /* 코드 타이핑 배경 스타일 (VS Code 폰트 및 스타일 적용) */
+        #codeBackground {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: -2; /* 그라데이션(-3) 위, 지구본/메인콘텐츠(-1, 1) 아래 */
+            pointer-events: none;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace; /* VS Code 스타일 폰트 */
+            font-size: 14px;
+            line-height: 1.5;
+            color: rgba(156, 220, 254, 0.15); /* VS Code 테마의 은은한 블루 색상 */
+            padding: 20px;
+            box-sizing: border-box;
+            overflow: hidden;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            text-align: left;
+            -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%);
+            mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 40%, rgba(0,0,0,0) 100%);
         }
-        .circle-1 { top: -5%; left: -5%; width: 50vw; height: 50vw; }
-        .circle-2 { bottom: -5%; right: -5%; width: 40vw; height: 40vw; background: rgba(255,255,255,0.15); }
 
-        @keyframes float {
-            0% { transform: translate(0, 0) scale(1); }
-            100% { transform: translate(30px, 50px) scale(1.05); }
+        .bg-circle {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0;
+            z-index: -3; /* 코드 배경(-2) 아래로 이동 */
+            animation: floatGlow 15s infinite alternate ease-in-out;
+            pointer-events: none;
+        }
+        .circle-1 { 
+            width: 50vw; height: 50vw; 
+            background: radial-gradient(circle, rgba(0, 255, 128, 0.4) 0%, transparent 70%);
+            top: 20%; left: 10%; 
+            animation-duration: 18s; animation-delay: 0s; 
+        }
+        .circle-2 { 
+            width: 60vw; height: 60vw; 
+            background: radial-gradient(circle, rgba(0, 128, 255, 0.4) 0%, transparent 70%);
+            bottom: 10%; right: 10%; 
+            animation-duration: 22s; animation-delay: -7s; 
+        }
+
+        @keyframes floatGlow {
+            0% { transform: translate(-10vw, -10vh) scale(0.8); opacity: 0; }
+            30% { opacity: 0.7; }
+            50% { transform: translate(20vw, 15vh) scale(1.2); opacity: 0.3; }
+            70% { opacity: 0.8; }
+            100% { transform: translate(-5vw, 20vh) scale(0.9); opacity: 0; }
         }
 
         .glass-box {
@@ -146,7 +183,6 @@
             50% { transform: translateY(-8px); }
         }
         
-        /* 수정한 부분: 1초 간격으로 3번만 실행 (총 3초) */
         #contact:target .bounce-btn {
             animation: bounce-up-down 1s 3 ease-in-out;
         }
@@ -167,55 +203,64 @@
         }
 
         nav {
-            width: 90%;
-            max-width: 1200px;
-            padding: 12px 30px;
+            width: calc(100% - 48px);
+            max-width: 800px;
+            padding: 8px 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             position: fixed; 
-            top: 20px; 
+            top: 24px;       /* 네비게이션을 상단으로 이동 */
+            bottom: auto;    /* 하단 고정 해제 */
             left: 50%; 
             transform: translateX(-50%); 
             z-index: 9999; 
-            background: rgba(255, 255, 255, 0.08); 
-            backdrop-filter: blur(15px);
-            -webkit-backdrop-filter: blur(15px);
-            border: 1px solid var(--glass-border);
-            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            background: rgba(255, 255, 255, 0.15); 
+            backdrop-filter: blur(24px) saturate(150%);
+            -webkit-backdrop-filter: blur(24px) saturate(150%);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1), 0 8px 32px rgba(0, 0, 0, 0.15);
             transition: all 0.4s ease;
+            border-radius: 9999px;
         }
 
         nav.scrolled {
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(25px);
-            -webkit-backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.4);
-            box-shadow: 0 4px 30px rgba(0,0,0,0.1);
-            top: 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.1), 0 8px 32px rgba(0,0,0,0.2);
+            top: 15px;       /* 스크롤 시 상단 여백 조절 */
+            bottom: auto;
         }
 
         .nav-left { display: flex; align-items: center; gap: 15px; }
-        .logo-text { font-size: 1.8rem; font-weight: 800; color: var(--text-color); text-decoration: none; white-space: nowrap; }
-        .nav-links { display: flex; gap: 10px; align-items: center; }
+        .logo-text { font-size: 1.5rem; font-weight: 800; color: var(--text-color); text-decoration: none; white-space: nowrap; }
+        .nav-links { display: flex; gap: 5px; align-items: center; }
 
         .nav-links a {
             text-decoration: none;
             color: var(--text-color);
             font-weight: 600;
-            padding: 8px 18px;
-            font-size: 0.95rem;
-            transition: 0.3s;
-            border-radius: 50px;
+            padding: 10px 16px;
+            font-size: 0.9rem;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 9999px;
         }
         
-        .nav-links a:hover { background: rgba(255,255,255,0.15); }
+        .nav-links a:hover { 
+            background: rgba(0, 0, 0, 0.4); 
+            box-shadow: inset 0 1px 4px rgba(0,0,0,0.5); 
+        }
 
         /* 네비게이션 전용 강조 버튼 */
         .nav-apply-btn {
             background: rgba(255, 255, 255, 0.2) !important;
             border: 1px solid rgba(255, 255, 255, 0.4);
             font-weight: 800 !important;
+        }
+        
+        .nav-apply-btn:hover {
+            background: rgba(255, 255, 255, 0.3) !important;
+            box-shadow: none !important;
         }
 
         header {
@@ -403,9 +448,9 @@
         .modal-actions { display: flex; flex-direction: column; gap: 12px; }
 
         @media (max-width: 768px) {
-            nav { width: 92%; padding: 10px 15px; top: 15px; }
-            .logo-text { font-size: 1.4rem; }
-            .nav-links a { padding: 8px 12px; font-size: 0.85rem; }
+            nav { width: calc(100% - 24px); padding: 8px 12px; top: 15px; bottom: auto; } /* 모바일 네비게이션도 상단으로 */
+            .logo-text { font-size: 1.2rem; }
+            .nav-links a { padding: 8px 10px; font-size: 0.8rem; }
             header h1 { font-size: 3.5rem; }
             header p { font-size: 1.2rem; }
             .section-title { font-size: 1.5rem; margin-top: 20px; }
@@ -426,8 +471,10 @@
     <canvas id="globeCanvas"></canvas>
     <div class="bg-circle circle-1"></div>
     <div class="bg-circle circle-2"></div>
+    <!-- 코드 타이핑 배경 엘리먼트 추가 -->
+    <div id="codeBackground"></div>
 
-    <nav class="pill" id="navbar">
+    <nav id="navbar">
         <div class="nav-left">
             <a href="https://adk090612.github.io/Daeryunhs_GongDae/" class="logo-text">0:</a>
         </div>
@@ -665,7 +712,7 @@
             });
         });
 
-        // 6. 공지사항 팝업 로직 (추가됨)
+        // 6. 공지사항 팝업 로직
         const noticeModal = document.getElementById('noticeModal');
         const closeNoticeBtn = document.getElementById('closeNoticeBtn');
         const confirmNoticeBtn = document.getElementById('confirmNoticeBtn');
@@ -674,9 +721,7 @@
         function checkAndShowNotice() {
             const hideUntil = localStorage.getItem('hideNoticeUntil');
             const now = new Date().getTime();
-            // 로컬 스토리지에 시간이 없거나 지정된 시간이 지났을 경우에만 팝업 표시
             if (!hideUntil || now > parseInt(hideUntil)) {
-                // 부드러운 애니메이션을 위해 0.3초 뒤에 띄움
                 setTimeout(() => {
                     noticeModal.classList.add('active');
                 }, 300);
@@ -685,7 +730,6 @@
 
         function closeNotice() {
             if (hideFor7DaysCheckbox && hideFor7DaysCheckbox.checked) {
-                // 체크박스 선택 시 7일(밀리초) 뒤의 시간을 저장
                 const hideTime = new Date().getTime() + (7 * 24 * 60 * 60 * 1000); 
                 localStorage.setItem('hideNoticeUntil', hideTime);
             }
@@ -698,7 +742,6 @@
             if (e.target === noticeModal) closeNotice();
         });
 
-        // 스크립트 실행 시 바로 공지사항 체크
         checkAndShowNotice();
 
         // 7. 지구본 3D 배경
@@ -746,6 +789,40 @@
             requestAnimationFrame(animateGlobe);
         }
         animateGlobe();
+
+        // 8. VS Code 스타일 소스 코드 타이핑 효과 (배경)
+        const codeBg = document.getElementById('codeBackground');
+        // 문서의 소스코드를 텍스트로 가져와 타이핑 효과 적용
+        const sourceCode = "<!DOCTYPE html>\n<html lang=\"ko\">\n" + document.documentElement.innerHTML;
+        let codeIndex = 0;
+
+        function typeSourceCode() {
+            const charsPerFrame = 5; // 타이핑 속도 (한 번에 타이핑할 글자 수)
+            if (codeIndex < sourceCode.length) {
+                codeBg.appendChild(document.createTextNode(sourceCode.substring(codeIndex, codeIndex + charsPerFrame)));
+                codeIndex += charsPerFrame;
+                
+                // 텍스트가 화면을 넘어가면 가장 아래로 자동 스크롤
+                if (codeBg.scrollHeight > codeBg.clientHeight) {
+                    codeBg.scrollTop = codeBg.scrollHeight;
+                }
+                
+                // 부드러운 타이핑을 위해 requestAnimationFrame 내에서 지연 실행
+                requestAnimationFrame(() => {
+                    setTimeout(typeSourceCode, 15);
+                });
+            } else {
+                // 모두 타이핑한 후 잠시 대기했다가 초기화 후 무한 반복
+                setTimeout(() => {
+                    codeBg.innerHTML = '';
+                    codeIndex = 0;
+                    typeSourceCode();
+                }, 8000);
+            }
+        }
+        
+        // 페이지 로드 후 0.5초 뒤 시작
+        setTimeout(typeSourceCode, 500);
     </script>
 </body>
 </html>
